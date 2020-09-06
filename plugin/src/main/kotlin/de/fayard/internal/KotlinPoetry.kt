@@ -3,6 +3,31 @@ package de.fayard.internal
 import com.squareup.kotlinpoet.*
 
 
+data class Dependency(
+    val group: String = "",
+    val module: String = "",
+    val version: String = ""
+) {
+    val name: String get() = module
+    fun groupModuleVersion() = "$group:$module:$version"
+    fun groupModuleUnderscore() = "$group:$module:_"
+    fun groupModule() = "$group:$module"
+    override fun toString() = groupModuleVersion()
+}
+
+
+class Deps(
+    val dependencies: List<Dependency>,
+    val modes : Map<Dependency, VersionMode>,
+    val names: Map<Dependency, String>
+)
+
+
+enum class VersionMode {
+    GROUP, GROUP_MODULE, MODULE
+}
+
+
 fun kotlinpoet(
     deps: Deps
 ): FileSpec {
@@ -39,29 +64,18 @@ fun kotlinpoet(
 
 }
 
-fun List<Dependency>.sortedBeautifullyBy(selection: (Dependency) -> String?): List<Dependency> {
+fun List<Dependency>.sortedBeautifullyBy(
+    selection: (Dependency) -> String?
+): List<Dependency> {
     return this.filterNot { selection(it) == null }
         .sortedBy { selection(it)!! }
-        //.sortedBy { it.mode }
 }
 
 
 
-fun parseGraph(
-    graph: DependencyGraph,
-    useFdqn: List<String>
-): Deps {
-    val dependencies: List<Dependency> = graph.current + graph.exceeded + graph.outdated + graph.unresolved
-    val resolvedUseFqdn = PluginConfig.computeUseFqdnFor(dependencies, useFdqn, PluginConfig.MEANING_LESS_NAMES)
-    return dependencies.checkModeAndNames(resolvedUseFqdn)
-}
 
 fun List<Dependency>.checkModeAndNames(useFdqnByDefault: List<String>): Deps {
     val dependencies = this
-        .map { d ->
-            if (d is DependencyExt) Dependency(d.group, d.name, d.version) else d
-        }
-        .sortedBeautifullyBy() { it.groupModuleVersion() }
 
     val modes: MutableMap<Dependency, VersionMode> = dependencies.associate { d: Dependency ->
         val mode = when {
@@ -93,7 +107,7 @@ fun List<Dependency>.checkModeAndNames(useFdqnByDefault: List<String>): Deps {
         }
     }
 
-    return Deps(dependencies, modes, names)
+    return Deps(dependencies.sortedBeautifullyBy { it.groupModule() }, modes, names)
 }
 
 

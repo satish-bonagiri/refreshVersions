@@ -94,7 +94,7 @@ fun BuildSrcVersionsTask.configureRefreshVersions() {
 fun BuildSrcVersionsTask.configureBuildSrcVersions() {
     group = "Help"
     description = "Update buildSrc/src/main/kotlin/{Versions.kt,Libs.kt}"
-    dependsOn(PluginConfig.DEPENDENCY_UPDATES_PATH)
+    //dependsOn(PluginConfig.DEPENDENCY_UPDATES_PATH)
     outputs.upToDateWhen { false }
     configure {
         versionsOnlyFile = null

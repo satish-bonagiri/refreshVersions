@@ -1,12 +1,7 @@
 package de.fayard.internal
 
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
-import com.squareup.moshi.JsonAdapter
-import com.squareup.moshi.Moshi
-import okio.buffer
-import okio.source
 import org.gradle.util.GradleVersion
-import java.io.File
 
 @Suppress("unused")
 object PluginConfig {
@@ -21,6 +16,11 @@ object PluginConfig {
     const val DEPENDENCY_UPDATES_PATH = ":$DEPENDENCY_UPDATES"
     const val REFRESH_VERSIONS = "refreshVersions"
     const val BUILD_SRC_VERSIONS = EXTENSION_NAME
+
+    val knownConfigurations = listOf(
+        "implementation", "api", "compileOnly", "runtimeOnly", "kapt",
+        "testImplementation", "androidTestImplementation", "compileClasspath"
+    )
 
     /** There is no standard on how to name stable and unstable versions
      * This version is a good starting point but you can define you rown
@@ -56,7 +56,7 @@ object PluginConfig {
      * For now this list is not part of the public API but feel free to add feedback that you need it.
      * Add your use case here https://github.com/jmfayard/buildSrcVersions/issues/102
      ***/
-    val virtualGroups : MutableList<String> = mutableListOf(
+    val virtualGroups: MutableList<String> = mutableListOf(
         "org.jetbrains.kotlinx.kotlinx-coroutines",
         "org.jetbrains.kotlinx.kotlinx-serialization"
     )
@@ -141,18 +141,6 @@ object PluginConfig {
         |}
         """.trimMargin()
 
-
-    val moshi: Moshi = Moshi.Builder().build()
-
-    inline fun <reified T : Any> moshiAdapter(clazz: Class<T> = T::class.java): Lazy<JsonAdapter<T>> = lazy { moshi.adapter(clazz) }
-
-    val dependencyGraphAdapter: JsonAdapter<DependencyGraph> by moshiAdapter()
-
-    internal val extensionAdapter: JsonAdapter<BuildSrcVersionsExtensionImpl> by moshiAdapter()
-
-    fun readGraphFromJsonFile(jsonInput: File): DependencyGraph {
-        return dependencyGraphAdapter.fromJson(jsonInput.source().buffer())!!
-    }
 
     val VERSIONS_ONLY_START = "<buildSrcVersions>"
     val VERSIONS_ONLY_END = "</buildSrcVersions>"

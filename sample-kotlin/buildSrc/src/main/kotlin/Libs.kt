@@ -14,20 +14,17 @@ object Libs {
     const val com_gradle_build_scan_gradle_plugin: String =
             "com.gradle.build-scan:com.gradle.build-scan.gradle.plugin:_"
 
-    const val okhttp_urlconnection: String = "com.squareup.okhttp3:okhttp-urlconnection:_"
-
     const val okhttp: String = "com.squareup.okhttp3:okhttp:_"
+
+    const val okhttp_urlconnection: String = "com.squareup.okhttp3:okhttp-urlconnection:_"
 
     const val org_jetbrains_kotlin_jvm_gradle_plugin: String =
             "org.jetbrains.kotlin.jvm:org.jetbrains.kotlin.jvm.gradle.plugin:_"
 
-    const val kotlin_klib_commonizer_embeddable: String =
-            "org.jetbrains.kotlin:kotlin-klib-commonizer-embeddable:_"
-
     const val kotlin_scripting_compiler_embeddable: String =
             "org.jetbrains.kotlin:kotlin-scripting-compiler-embeddable:_"
 
-    const val kotlin_stdlib_jdk8: String = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:_"
+    const val kotlin_stdlib_jdk8: String = "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 
     const val mongo_java_driver: String = "org.mongodb:mongo-java-driver:_"
 }
