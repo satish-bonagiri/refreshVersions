@@ -4,19 +4,20 @@ import com.squareup.kotlinpoet.*
 
 
 fun kotlinpoet(
-    versions: List<Dependency>
+    deps: Deps
 ): FileSpec {
+    val dependencies: List<Dependency> = deps.dependencies
     val indent = "    "
 
-    val libsProperties: List<PropertySpec> = versions
-        .distinctBy { it.escapedName }
-        .map {
+    val libsProperties: List<PropertySpec> = dependencies
+        .distinctBy { it.groupModule() }
+        .map { d ->
             val libValue = when {
-                it.version == "none" -> CodeBlock.of("%S", "${it.group}:${it.name}")
-                else -> CodeBlock.of("%S", "${it.group}:${it.name}:_")
+                d.version == "none" -> CodeBlock.of("%S", d.groupModule())
+                else -> CodeBlock.of("%S", d.groupModuleUnderscore())
             }
             constStringProperty(
-                name = it.escapedName,
+                name = deps.names[d]!!,
                 initializer = libValue,
                 kdoc = null
             )
@@ -41,71 +42,60 @@ fun kotlinpoet(
 fun List<Dependency>.sortedBeautifullyBy(selection: (Dependency) -> String?): List<Dependency> {
     return this.filterNot { selection(it) == null }
         .sortedBy { selection(it)!! }
-        .sortedBy { it.mode }
+        //.sortedBy { it.mode }
 }
 
-
-fun Dependency.versionInformation(): String {
-    val newerVersion = newerVersion()
-    val comment = when {
-        version == "none" -> "// No version. See buildSrcVersions#23"
-        newerVersion == null -> ""
-        else -> """ // available: "$newerVersion""""
-    }
-    val addNewLine = comment.length + versionName.length + version.length > 70
-
-    return if (addNewLine) "\n$comment" else comment
-}
-
-fun Dependency.newerVersion(): String? =
-    when {
-        available == null -> null
-        available.release.isNullOrBlank().not() -> available.release
-        available.milestone.isNullOrBlank().not() -> available.milestone
-        available.integration.isNullOrBlank().not() -> available.integration
-        else -> null
-    }?.trim()
 
 
 fun parseGraph(
     graph: DependencyGraph,
     useFdqn: List<String>
-): List<Dependency> {
+): Deps {
     val dependencies: List<Dependency> = graph.current + graph.exceeded + graph.outdated + graph.unresolved
     val resolvedUseFqdn = PluginConfig.computeUseFqdnFor(dependencies, useFdqn, PluginConfig.MEANING_LESS_NAMES)
-    return dependencies.checkModeAndNames(resolvedUseFqdn).findCommonVersions()
+    return dependencies.checkModeAndNames(resolvedUseFqdn)
 }
 
-fun List<Dependency>.checkModeAndNames(useFdqnByDefault: List<String>): List<Dependency> {
-    for (d: Dependency in this) {
-        d.mode = when {
-            d.name in useFdqnByDefault -> VersionMode.GROUP_MODULE
-            PluginConfig.escapeVersionsKt(d.name) in useFdqnByDefault -> VersionMode.GROUP_MODULE
+fun List<Dependency>.checkModeAndNames(useFdqnByDefault: List<String>): Deps {
+    val dependencies = this
+        .map { d ->
+            if (d is DependencyExt) Dependency(d.group, d.name, d.version) else d
+        }
+        .sortedBeautifullyBy() { it.groupModuleVersion() }
+
+    val modes: MutableMap<Dependency, VersionMode> = dependencies.associate { d: Dependency ->
+        val mode = when {
+            d.module in useFdqnByDefault -> VersionMode.GROUP_MODULE
+            PluginConfig.escapeVersionsKt(d.module) in useFdqnByDefault -> VersionMode.GROUP_MODULE
             else -> VersionMode.MODULE
         }
-        d.escapedName = PluginConfig.escapeVersionsKt(
-            when (d.mode) {
-                VersionMode.MODULE -> d.name
-                VersionMode.GROUP -> d.groupOrVirtualGroup()
-                VersionMode.GROUP_MODULE -> "${d.group}_${d.name}"
+        Pair(d, mode)
+    }.toMutableMap()
+
+    val names = dependencies.associate { d: Dependency ->
+        val name = PluginConfig.escapeVersionsKt(
+            when (modes[d]!!) {
+                VersionMode.MODULE -> d.module
+                VersionMode.GROUP -> d.group
+                VersionMode.GROUP_MODULE -> "${d.group}_${d.module}"
             }
         )
+        Pair(d, name)
     }
-    return this
-}
 
-
-fun List<Dependency>.findCommonVersions(): List<Dependency> {
-    val map = groupBy { d: Dependency -> d.groupOrVirtualGroup() }
+    // findCommonVersion
+    val map = groupBy { d: Dependency -> d.group }
     for (deps in map.values) {
         val sameVersions = deps.map { it.version }.distinct().size == 1
-        val hasVirtualGroup = deps.any { it.groupOrVirtualGroup() != it.group }
+        val hasVirtualGroup = deps.any { it.group != it.group }
         if (sameVersions && (hasVirtualGroup || deps.size > 1)) {
-            deps.forEach { d -> d.mode = VersionMode.GROUP }
+            deps.forEach { d -> modes[d] = VersionMode.GROUP }
         }
     }
-    return this
+
+    return Deps(dependencies, modes, names)
 }
+
 
 fun constStringProperty(name: String, initializer: CodeBlock, kdoc: CodeBlock? = null) =
     PropertySpec.builder(name, String::class)

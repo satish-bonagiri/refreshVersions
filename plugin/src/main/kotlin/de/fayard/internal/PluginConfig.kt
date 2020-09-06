@@ -3,9 +3,6 @@ package de.fayard.internal
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
-import de.fayard.internal.VersionMode.GROUP
-import de.fayard.internal.VersionMode.GROUP_MODULE
-import de.fayard.internal.VersionMode.MODULE
 import okio.buffer
 import okio.source
 import org.gradle.util.GradleVersion
@@ -13,7 +10,6 @@ import java.io.File
 
 @Suppress("unused")
 object PluginConfig {
-
 
 
     const val PLUGIN_ID = "de.fayard.buildSrcVersions"
@@ -50,7 +46,6 @@ object PluginConfig {
      *  **/
     fun considerGradleProperties(group: String, module: String): List<String> = listOfNotNull(
         "version.$group..$module",
-        Dependency.virtualGroup(Dependency(group = group, name = module)),
         "version.$group",
         "version.$module"
     )
@@ -66,21 +61,6 @@ object PluginConfig {
         "org.jetbrains.kotlinx.kotlinx-serialization"
     )
 
-
-    @JvmStatic
-    fun versionPropertyFor(d: Dependency): String = when (d.mode) {
-        MODULE -> d.name
-        GROUP -> d.groupOrVirtualGroup()
-        GROUP_MODULE -> "${d.group}..${d.name}"
-    }
-
-    fun versionKtFor(d: Dependency): String = escapeVersionsKt(
-        when (d.mode) {
-            MODULE -> d.name
-            GROUP -> d.groupOrVirtualGroup()
-            GROUP_MODULE -> "${d.group}:${d.name}"
-        }
-    )
 
     fun escapeVersionsKt(name: String): String {
         val escapedChars = listOf('-', '.', ':')
@@ -117,7 +97,7 @@ object PluginConfig {
      *
      * Found many inspiration for bad libs here https://developer.android.com/jetpack/androidx/migrate
      * **/
-    val MEANING_LESS_NAMES: List<String> = listOf(
+    val MEANING_LESS_NAMES: MutableList<String> = mutableListOf(
         "common", "core", "testing", "runtime", "extensions",
         "compiler", "migration", "db", "rules", "runner", "monitor", "loader",
         "media", "print", "io", "collection", "gradle", "android"
@@ -211,38 +191,11 @@ object PluginConfig {
         }
 
 
-    val gradleVersionsPlugin: Dependency = Dependency(
-        group = "com.github.ben-manes",
-        name = "$GRADLE_VERSIONS_PLUGIN_ID.gradle.plugin",
-        version = GRADLE_VERSIONS_PLUGIN_VERSION,
-        mode = MODULE,
-        available = null
-    )
-
-    val buildSrcVersionsPlugin: Dependency = Dependency(
-        group = "de.fayard",
-        name = "$PLUGIN_ID.gradle.plugin",
-        version = PLUGIN_VERSION,
-        mode = MODULE,
-        available = null
-    )
-
-    fun gradleLatestVersion(graph: DependencyGraph): Dependency = Dependency(
-        group = "org.gradle",
-        name = GRADLE_LATEST_VERSION,
-        mode = MODULE,
-        version = graph.gradle.running.version,
-        available = when {
-            graph.gradle.running == graph.gradle.current -> null
-            else -> AvailableDependency(release = graph.gradle.current.version)
-        }
-    )
-
     fun computeUseFqdnFor(
         dependencies: List<Dependency>,
         configured: List<String>,
         byDefault: List<String> = MEANING_LESS_NAMES
-    ) : List<String> {
+    ): List<String> {
         val groups = (configured + byDefault).filter { it.contains(".") }.distinct()
         val depsFromGroups = dependencies.filter { it.group in groups }.map { it.module }
         val ambiguities = dependencies.groupBy { it.module }.filter { it.value.size > 1 }.map { it.key }

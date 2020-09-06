@@ -7,12 +7,12 @@ import kotlin.String
  *   `$ ./gradlew buildSrcVersions`
  */
 object Libs {
-    const val com_google_inject_guice: String = "com.google.inject:guice:_"
-
     const val annotation: String = "androidx.annotation:annotation:_"
+
+    const val guava: String = "com.google.guava:guava:_"
+
+    const val guice: String = "com.google.inject:guice:_"
 
     const val com_gradle_build_scan_gradle_plugin: String =
             "com.gradle.build-scan:com.gradle.build-scan.gradle.plugin:_"
-
-    const val guava: String = "com.google.guava:guava:_"
 }

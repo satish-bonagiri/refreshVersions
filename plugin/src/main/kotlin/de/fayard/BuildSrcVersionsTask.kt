@@ -45,10 +45,10 @@ open class BuildSrcVersionsTask : DefaultTask() {
     fun taskActionUpdateBuildSrc() {
         val outputDir = project.file(OutputFile.OUTPUTDIR.path)
 
-        // TODO this
-        val versions = unsortedParsedDependencies.sortedBeautifullyBy() { it.versionName }
+        val deps = parseGraph(dependencyGraph, PluginConfig.MEANING_LESS_NAMES)
 
-        val libsFile: FileSpec = kotlinpoet(versions)
+        val libsFile: FileSpec = kotlinpoet(deps)
+
         libsFile.writeTo(outputDir)
         OutputFile.logFileWasModified(OutputFile.LIBS.path, OutputFile.LIBS.existed)
     }
@@ -73,10 +73,6 @@ open class BuildSrcVersionsTask : DefaultTask() {
         return@lazy PluginConfig.readGraphFromJsonFile(jsonInput)
     }
 
-    private val unsortedParsedDependencies: List<Dependency> by lazy {
-        parseGraph(dependencyGraph, extension().useFqqnFor)
-            .map { d -> d.maybeUpdate(false || extension().alwaysUpdateVersions) }
-    }
 
     @Input
     @Optional
