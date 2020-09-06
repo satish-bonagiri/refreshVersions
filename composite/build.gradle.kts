@@ -35,6 +35,15 @@ tasks.register<DefaultTask>("hello") {
     description = "Minimal task that do nothing. Useful to debug a failing build"
 }
 
+tasks.register("bsv") {
+    group = CUSTOM
+    description = "Run plugin unit tests"
+    dependsOn(PLUGIN.task(":publishToMavenLocal"))
+    dependsOn(SAMPLE_KOTLIN.task(BUILD_SRC_VERSIONS))
+    dependsOn(SAMPLE_GROOVY.task(BUILD_SRC_VERSIONS))
+}
+
+
 tasks.register("pluginTests") {
     group = CUSTOM
     description = "Run plugin unit tests"

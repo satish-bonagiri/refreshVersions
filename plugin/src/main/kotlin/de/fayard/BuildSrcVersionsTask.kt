@@ -124,6 +124,11 @@ open class BuildSrcVersionsTask : DefaultTask() {
         }
     }
 
+    @TaskAction
+    fun sayHello() {
+        logger.warn("Hello World!")
+    }
+
     private val dependencyGraph: DependencyGraph by lazy {
         val extension: BuildSrcVersionsExtensionImpl = extension()
 

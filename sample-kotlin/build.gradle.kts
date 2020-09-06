@@ -14,6 +14,8 @@ repositories {
         setUrl("../plugin/src/test/resources/maven")
     }
     mavenCentral()
+    jcenter()
+    google()
 }
 
 dependencies {

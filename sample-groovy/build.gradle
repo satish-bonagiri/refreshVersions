@@ -18,13 +18,15 @@ repositories {
         setUrl("../plugin/src/test/resources/maven")
     }
     mavenCentral()
+    jcenter()
+    google()
 }
 
 dependencies {
     compile("com.google.guava:guava:15.0")
     compile("com.google.inject:guice:2.0")
     compile("androidx.annotation:annotation:1.1.0")
-    compile("org.jetbrains:annotation:17.0.0")
+    //compile("org.jetbrains:annotation:17.0.0")
 }
 
 def isNonStable = { String version ->
