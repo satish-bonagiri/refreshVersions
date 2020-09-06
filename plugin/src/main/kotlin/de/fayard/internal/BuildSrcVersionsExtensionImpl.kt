@@ -21,9 +21,6 @@ internal open class BuildSrcVersionsExtensionImpl(
         this.alwaysUpdateVersions = true
     }
 
-    // Use @Transient for fields that should not be present in toString()
-    override fun toString(): String = PluginConfig.extensionAdapter.toJson(this)
-
     override fun rejectVersionIf(filter: ComponentFilter) {
         (PluginConfig.configureGradleVersions) {
             this.rejectVersionIf(filter)
