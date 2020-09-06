@@ -1,6 +1,4 @@
 import de.fayard.BuildSrcVersionsTask
-import de.fayard.OrderBy
-import de.fayard.VersionsOnlyMode
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -12,12 +10,6 @@ plugins {
     `build-scan`
 }
 group = "de.fayard"
-
-buildSrcVersions {
-    // See configuration options at https://github.com/jmfayard/buildSrcVersions/issues/53
-    indent = "     "
-    orderBy = OrderBy.GROUP_AND_ALPHABETICAL
-}
 
 repositories {
     maven {
@@ -57,28 +49,9 @@ tasks.register<DefaultTask>("hello") {
     group = "Custom"
 }
 
-VersionsOnlyMode.values().forEach { mode ->
-    if (mode == VersionsOnlyMode.GRADLE_PROPERTIES) {
-        tasks.register<DefaultTask>(mode.name)
-        return@forEach
-    }
-
-    tasks.register<BuildSrcVersionsTask>(mode.name) {
-        description = "buildSrcVersion - $mode"
-        group = "Custom"
-        dependsOn(":copyReport")
-        val filename = mode.name + "." + mode.suggestedFilename().substringAfter(".")
-        configure {
-            versionsOnlyFile = filename
-            versionsOnlyMode = mode
-        }
-    }
-}
-
 tasks.register<DefaultTask>("checkAll") {
     description = "versionsOnlyMode - check all modes"
     group = "Custom"
-    dependsOn(VersionsOnlyMode.values().map { it.name })
 }
 
 buildScan {

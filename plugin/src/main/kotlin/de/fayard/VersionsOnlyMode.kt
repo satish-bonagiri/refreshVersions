@@ -1,9 +1,11 @@
 package de.fayard
 
 import de.fayard.internal.PluginConfig
-import de.fayard.internal.UpdateVersionsOnly.doubleQuote
-import de.fayard.internal.UpdateVersionsOnly.singleQuote
-import de.fayard.internal.UpdateVersionsOnly.slashslash
+
+const val singleQuote = "'"
+const val doubleQuote = "\""
+const val slashslash = "//"
+const val newline = "\n"
 
 enum class VersionsOnlyMode {
     KOTLIN_VAL,

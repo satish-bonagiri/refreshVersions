@@ -1,15 +1,6 @@
 package de.fayard.internal
 
-import com.squareup.kotlinpoet.CodeBlock
-import com.squareup.kotlinpoet.FileSpec
-import com.squareup.kotlinpoet.FunSpec
-import com.squareup.kotlinpoet.KModifier
-import com.squareup.kotlinpoet.PropertySpec
-import com.squareup.kotlinpoet.TypeSpec
-import com.squareup.kotlinpoet.asClassName
-import de.fayard.BuildSrcVersionsExtension
-import org.gradle.plugin.use.PluginDependenciesSpec
-import org.gradle.plugin.use.PluginDependencySpec
+import com.squareup.kotlinpoet.*
 
 
 fun kotlinpoet(
@@ -47,12 +38,11 @@ fun kotlinpoet(
 
 }
 
-fun List<Dependency>.sortedBeautifullyBy(selection: (Dependency) -> String?) : List<Dependency> {
+fun List<Dependency>.sortedBeautifullyBy(selection: (Dependency) -> String?): List<Dependency> {
     return this.filterNot { selection(it) == null }
         .sortedBy { selection(it)!! }
         .sortedBy { it.mode }
 }
-
 
 
 fun Dependency.versionInformation(): String {
@@ -67,7 +57,7 @@ fun Dependency.versionInformation(): String {
     return if (addNewLine) "\n$comment" else comment
 }
 
-fun Dependency.newerVersion(): String?  =
+fun Dependency.newerVersion(): String? =
     when {
         available == null -> null
         available.release.isNullOrBlank().not() -> available.release
@@ -103,8 +93,6 @@ fun List<Dependency>.checkModeAndNames(useFdqnByDefault: List<String>): List<Dep
     }
     return this
 }
-
-
 
 
 fun List<Dependency>.findCommonVersions(): List<Dependency> {

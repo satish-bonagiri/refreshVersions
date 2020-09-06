@@ -65,24 +65,10 @@ interface BuildSrcVersionsExtension {
     var indent: String?
 
     /**
-     * Possible values: KOTLIN_VAL, KOTLIN_OBJECT, GROOVY_DEF, GROOVY_EXT, GRADLE_PROPERTIES
-     * See https://github.com/jmfayard/buildSrcVersions/tree/master/sample-versionsOnlyMode
-     **/
-    var versionsOnlyMode: VersionsOnlyMode?
-
-    /**
      * See [versionsOnlyMode]
      * Probably "gradle.properties" for GRADLE_PROPERTIES, "build.gradle" for GROOVY_DEF, ...
      */
     var versionsOnlyFile: String?
 
-    /**
-     * orderBy = OrderBy.GROUP_AND_ALPHABETICAL to override the default behavior
-     * https://github.com/jmfayard/buildSrcVersions/issues/65 **/
-    var orderBy: OrderBy
 
-}
-
-enum class OrderBy {
-    GROUP_AND_LENGTH, GROUP_AND_ALPHABETICAL
 }
