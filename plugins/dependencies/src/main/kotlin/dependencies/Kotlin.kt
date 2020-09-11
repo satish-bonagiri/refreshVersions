@@ -9,16 +9,17 @@ object Kotlin {
 
     /**
      * Kotlin Standard Library
-     * https://kotlinlang.org/api/latest/jvm/stdlib/
+     *
+     * [API reference](https://kotlinlang.org/api/latest/jvm/stdlib/)
      */
     val stdlib = Stdlib
 
     /**
-     * the kotlin.test library provides annotations to mark test functions
-     * and a set of utility functions for performing assertions in tests, independently of the test framework being used.
+     * The `kotlin.test` library provides annotations to mark test functions,
+     * and a set of utility functions for performing assertions in tests,
+     * independently of the test framework being used.
      *
-     * https://kotlinlang.org/api/latest/kotlin.test/
-     * https://kotlinlang.org/api/latest/kotlin.test/kotlin.test/
+     * [Documentation and API reference](https://kotlinlang.org/api/latest/kotlin.test/)
      */
     val test = Test
 

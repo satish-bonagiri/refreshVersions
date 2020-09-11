@@ -19,36 +19,44 @@ object Testing {
     const val junit4 = "junit:junit:_"
 
     /**
-     * JUnit 5 - The new major version of the programmer-friendly testing framework for Java
+     * JUnit 5: The new major version of the programmer-friendly testing framework for Java
      *
-     * - [GitHub](https://github.com/junit-team/junit5)
-     * - [https://junit.org/junit5/ - Official website](https://junit.org/junit5/)
-     * - [User Guide](https://junit.org/junit5/docs/current/user-guide/)
-     * - [JavaDoc](https://junit.org/junit5/docs/current/api/)
-     * - [Release Notes](https://junit.org/junit5/docs/current/release-notes/)
+     * Official website: [junit.org/junit5](https://junit.org/junit5/)
+     *
+     * [User Guide](https://junit.org/junit5/docs/current/user-guide/)
+     *
+     * [Release Notes](https://junit.org/junit5/docs/current/release-notes/)
+     *
+     * GitHub page: [junit-team/junit5](https://github.com/junit-team/junit5)
+     *
+     * [API reference (JavaDoc)](https://junit.org/junit5/docs/current/api/)
      */
     val junit = JunitJupiter
 
-    /***
-     * kotest/kotest -  Powerful, elegant and flexible test framework for Kotlin
+    /**
+     * Powerful, elegant and flexible test framework for Kotlin
      *
-     * - [GitHub](https://github.com/kotest/kotest)
-     * - [Getting Started](https://github.com/kotest/kotest/blob/master/doc/reference.md#getting-started)
-     * - [Full Documentation](https://github.com/kotest/kotest/blob/master/doc/reference.md#getting-started)
-     * - [CHANGELOG](https://github.com/kotest/kotest/blob/master/CHANGELOG.md)
+     * Official website: [kotest.io](https://kotest.io/)
+     *
+     * [Change log](https://kotest.io/changelog/)
+     *
+     * GitHub page: [kotest/kotest](https://github.com/kotest/kotest)
      */
     val kotest = Kotest
 
     /**
-     *  spekframework/spek -  A specification framework for Kotlin
+     * A specification framework for Kotlin
      *
-     * - [GitHub](https://github.com/spekframework/spek)
-     * - [https://www.spekframework.org/ - Documentation](https://www.spekframework.org/)
+     * Official website: [spekframework.org](https://www.spekframework.org/)
+     *
+     * GitHub page: [spekframework/spek](https://github.com/spekframework/spek)
+     *
+     * [GitHub releases](https://github.com/spekframework/spek/releases)
      */
     val spek = Spek
 
     /**
-     * robfletcher/strikt - An assertion library for Kotlin
+     * Strikt is an assertion library for Kotlin intended for use with a test runner such as JUnit or Spek.
      *
      * - [GitHub](https://github.com/robfletcher/strikt)
      * - [https://strikt.io/ - Documentation and API docs](https://strikt.io/)
@@ -81,9 +89,17 @@ object Testing {
     const val roboElectric = "org.robolectric:robolectric:_"
 
     /**
-     * The new major version of the programmer-friendly testing framework for Java
+     * JUnit 5: The new major version of the programmer-friendly testing framework for Java
      *
      * Official website: [junit.org/junit5](https://junit.org/junit5/)
+     *
+     * [User Guide](https://junit.org/junit5/docs/current/user-guide/)
+     *
+     * [Release Notes](https://junit.org/junit5/docs/current/release-notes/)
+     *
+     * GitHub page: [junit-team/junit5](https://github.com/junit-team/junit5)
+     *
+     * [API reference (JavaDoc)](https://junit.org/junit5/docs/current/api/)
      */
     object JunitJupiter : DependencyNotationAndGroup(group = "org.junit.jupiter", name = "junit-jupiter") {
         @JvmField val api = "$artifactPrefix-api:_"
@@ -94,6 +110,10 @@ object Testing {
 
     /**
      * Powerful, elegant and flexible test framework for Kotlin
+     *
+     * Official website: [kotest.io](https://kotest.io/)
+     *
+     * [Change log](https://kotest.io/changelog/)
      *
      * GitHub page: [kotest/kotest](https://github.com/kotest/kotest)
      */
@@ -151,8 +171,11 @@ object Testing {
     /**
      * A specification framework for Kotlin
      *
-     * Official website :[spekframework.org](https://www.spekframework.org)
-     * GitHub page: [spekframework/spek](https://github.com/spekframework/spek/)
+     * Official website: [spekframework.org](https://www.spekframework.org/)
+     *
+     * GitHub page: [spekframework/spek](https://github.com/spekframework/spek)
+     *
+     * [GitHub releases](https://github.com/spekframework/spek/releases)
      */
     object Spek: IsNotADependency {
         private const val artifactBase = "org.spekframework.spek2:spek"
